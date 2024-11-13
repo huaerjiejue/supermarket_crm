@@ -1,19 +1,15 @@
 <template>
   <div class="app-container">
-    <h2 class="title">客户信息管理</h2>
+    <h2 class="title">客户消费管理</h2>
     <el-form :inline="true" :model="queryForm" class="query-form">
       <el-form-item label="姓名">
         <el-input v-model="queryForm.name" placeholder="输入姓名" />
       </el-form-item>
-      <el-form-item label="联系方式">
-        <el-input v-model="queryForm.contact" placeholder="请输入联系方式" />
+      <el-form-item label="消费时间">
+        <el-date-picker v-model="queryForm.consumption_time" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
       </el-form-item>
-      <el-form-item label="等级">
-        <el-select v-model="queryForm.level" placeholder="选择等级" clearable>
-          <el-option label="普通会员" value="普通会员" />
-          <el-option label="白银会员" value="白银会员" />
-          <el-option label="黄金会员" value="黄金会员" />
-        </el-select>
+      <el-form-item label="促销活动">
+        <el-input v-model="queryForm.promotion" placeholder="输入促销活动" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleQuery">查询</el-button>
@@ -35,15 +31,10 @@
       </el-table-column>
       <el-table-column label="姓名" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.author }}
+          {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="联系方式" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.tele }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="消费总额" width="110" align="center">
+      <el-table-column label="消费金额" width="110" align="center">
         <template slot-scope="scope">
           {{ scope.row.cost }}
         </template>
@@ -53,10 +44,15 @@
           <el-tag :type="$options.filters.levelFilter(scope.row.level)">{{ scope.row.level }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="注册日期" width="200">
+      <el-table-column align="center" prop="created_at" label="消费时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          <span>{{ scope.row.consumption_time }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="促销活动" width="110" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.promotion }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -64,7 +60,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/customer'
+import { getList } from '@/api/consumption'
 
 export default {
   filters: {
@@ -81,14 +77,15 @@ export default {
     return {
       queryForm: {
         name: '',
-        contact: '',
-        level: ''
+        consumption_time: '',
+        promotion: ''
       },
       list: null,
       listLoading: true
     }
   },
   created() {
+    console.log('created')
     this.fetchData()
   },
   methods: {
@@ -108,9 +105,9 @@ export default {
       getList().then(response => {
         this.list = response.data.items.filter(item => {
           return (
-            (!this.queryForm.name || item.author.includes(this.queryForm.name)) &&
-            (!this.queryForm.contact || item.tele.includes(this.queryForm.contact)) &&
-            (!this.queryForm.level || item.level === this.queryForm.level)
+            (!this.queryForm.name || item.name.includes(this.queryForm.name)) &&
+            (!this.queryForm.consumption_time || item.consumption_time.includes(this.queryForm.consumption_time)) &&
+            (!this.queryForm.promotion || item.promotion.includes(this.queryForm.promotion))
           )
         })
         this.listLoading = false
@@ -121,8 +118,8 @@ export default {
     },
     handleReset() {
       this.queryForm.name = ''
-      this.queryForm.contact = ''
-      this.queryForm.level = ''
+      this.queryForm.consumption_time = ''
+      this.queryForm.promotion = ''
       this.fetchData()
     }
   }

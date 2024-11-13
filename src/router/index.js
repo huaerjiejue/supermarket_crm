@@ -103,17 +103,30 @@ export const constantRoutes = [
   },
 
   {
-    path: '/form',
+    path: '/consumption',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        name: 'Consumption',
+        component: () => import('@/views/consumption/index'),
+        meta: { title: '消费记录', icon: 'form' }
       }
     ]
   },
+
+  // {
+  //   path: '/form',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Form',
+  //       component: () => import('@/views/consumption/index'),
+  //       meta: { title: 'Form', icon: 'form' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/nested',

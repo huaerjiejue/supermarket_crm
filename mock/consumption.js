@@ -4,17 +4,17 @@ const Mock = require('mockjs')
 const data = Mock.mock({
   'items|30': [{
     id: '@id',
-    tele: /^1[385][1-9]\d{8}/,
-    'levels|1': ['普通会员', '白银会员', '黄金会员'],
-    author: 'name',
-    display_time: '@datetime',
-    cost: '@integer(300, 5000)'
+    'level|1': ['普通会员', '白银会员', '黄金会员'],
+    name: '@pick(["Mike", "Bob"])',
+    consumption_time: '@datetime',
+    cost: '@integer(300, 5000)',
+    promotion: '@pick(["promotion1", "promotion2"])'
   }]
 })
 
 module.exports = [
   {
-    url: '/vue-admin-template/table/list',
+    url: '/vue-admin-template/consumption/list',
     type: 'get',
     response: config => {
       const items = data.items
