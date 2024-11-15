@@ -5,7 +5,6 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -55,49 +54,22 @@ export const constantRoutes = [
     }]
   },
 
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/customer',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'el-icon-s-help' },
-  //   children: [
-  //     {
-  //       path: 'customer',
-  //       name: 'Table',
-  //       component: () => import('@/views/customer/index'),
-  //       meta: { title: '客户信息管理表格', icon: 'customer' }
-  //     },
-  //     {
-  //       path: 'promotion',
-  //       name: 'Tree',
-  //       component: () => import('@/views/promotion/index'),
-  //       meta: { title: 'Tree', icon: 'promotion' }
-  //     }
-  //   ]
-  // },
   {
     path: '/customer',
     component: Layout,
+    meta: { title: '客户信息管理', icon: 'user' },
     children: [
       {
-        path: 'index',
+        path: 'list',
         name: 'Customer',
         component: () => import('@/views/customer/index'),
-        meta: { title: '客户信息管理表格', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/promotions',
-    component: Layout,
-    children: [
+        meta: { title: '客户信息管理表格', icon: 'customer' }
+      },
       {
-        path: 'index',
-        name: 'Promotions',
-        component: () => import('@/views/promotion/index'),
-        meta: { title: '促销活动', icon: 'tree' }
+        path: 'add',
+        name: 'AddCustomer',
+        component: () => import('@/views/customer/add.vue'),
+        meta: { title: '添加客户信息', icon: 'add' }
       }
     ]
   },
@@ -105,12 +77,39 @@ export const constantRoutes = [
   {
     path: '/consumption',
     component: Layout,
+    meta: { title: '消费记录', icon: 'consumption' },
+    children: [
+      {
+        path: 'list',
+        name: 'Consumption',
+        component: () => import('@/views/consumption/index'),
+        meta: { title: '消费记录', icon: 'consumption_index.svg' }
+      },
+      {
+        path: 'add',
+        name: 'AddConsumption',
+        component: () => import('@/views/consumption/add.vue'),
+        meta: { title: '添加消费记录', icon: 'add' }
+      }
+    ]
+  },
+
+  {
+    path: '/promotion',
+    component: Layout,
+    meta: { title: '促销活动', icon: 'promotion' },
     children: [
       {
         path: 'index',
-        name: 'Consumption',
-        component: () => import('@/views/consumption/index'),
-        meta: { title: '消费记录', icon: 'form' }
+        name: 'Promotions',
+        component: () => import('@/views/promotion/index'),
+        meta: { title: '促销活动', icon: 'promotion_index' }
+      },
+      {
+        path: 'add',
+        name: 'AddPromotion',
+        component: () => import('@/views/promotion/add.vue'),
+        meta: { title: '添加促销活动', icon: 'add' }
       }
     ]
   },
@@ -127,77 +126,6 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
-  },
-
   // {
   //   path: 'menu2',
   //   component: () => import('@/views/nested/menu2/index'),

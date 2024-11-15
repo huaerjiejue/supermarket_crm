@@ -1,78 +1,144 @@
 <template>
   <div class="app-container">
-    <el-input v-model="filterText" placeholder="Filter keyword" style="margin-bottom:30px;" />
+    <h2 class="title">促销活动管理</h2>
+    <el-button type="success" class="add-button" @click="Add">添加促销活动</el-button>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <!-- ID 列 -->
+      <el-table-column align="center" label="ID" width="95">
+        <template slot-scope="scope">
+          {{ scope.$index }}
+        </template>
+      </el-table-column>
 
-    <el-tree
-      ref="tree2"
-      :data="data2"
-      :props="defaultProps"
-      :filter-node-method="filterNode"
-      class="filter-tree"
-      default-expand-all
-    />
+      <!-- 促销名称 (可编辑) -->
+      <el-table-column label="促销名称" width="110" align="center">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.name"
+            placeholder="请输入促销名称"
+            size="small"
+          />
+        </template>
+      </el-table-column>
 
+      <!-- 描述 (可编辑) -->
+      <el-table-column label="描述" align="center">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.description"
+            placeholder="请输入描述"
+            size="small"
+          />
+        </template>
+      </el-table-column>
+
+      <!-- 促销类型 -->
+      <el-table-column class-name="status-col" label="促销类型" width="150" align="center">
+        <template slot-scope="scope">
+          <el-select v-model="scope.row.discountType" size="small">
+            <el-option label="满减" value="full_reduction" />
+            <el-option label="折扣" value="discount" />
+          </el-select>
+        </template>
+      </el-table-column>
+
+      <!-- 开始时间 -->
+      <el-table-column label="开始时间" width="150" align="center">
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.startDate"
+            type="date"
+            size="small"
+            placeholder="选择日期"
+          />
+        </template>
+      </el-table-column>
+
+      <!-- 结束时间 -->
+      <el-table-column label="结束时间" width="150" align="center">
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.endDate"
+            type="date"
+            size="small"
+            placeholder="选择日期"
+          />
+        </template>
+      </el-table-column>
+
+      <!-- 操作列 -->
+      <el-table-column label="操作" width="150" align="center">
+        <template slot-scope="scope">
+          <el-button
+            type="primary"
+            size="small"
+            @click="saveRow(scope.row)"
+          >保存</el-button>
+          <el-button
+            type="danger"
+            size="small"
+            @click="deleteRow(scope.row)"
+          >删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
-export default {
+import { getPromotions, deletePromotion, updatePromotion } from '@/api/promotion'
 
+export default {
   data() {
     return {
-      filterText: '',
-      data2: [{
-        id: 1,
-        label: 'Level one 1',
-        children: [{
-          id: 4,
-          label: 'Level two 1-1',
-          children: [{
-            id: 9,
-            label: 'Level three 1-1-1'
-          }, {
-            id: 10,
-            label: 'Level three 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: 'Level one 2',
-        children: [{
-          id: 5,
-          label: 'Level two 2-1'
-        }, {
-          id: 6,
-          label: 'Level two 2-2'
-        }]
-      }, {
-        id: 3,
-        label: 'Level one 3',
-        children: [{
-          id: 7,
-          label: 'Level two 3-1'
-        }, {
-          id: 8,
-          label: 'Level two 3-2'
-        }]
-      }],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
+      list: [],
+      listLoading: true
     }
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree2.filter(val)
-    }
+  created() {
+    this.fetchData()
   },
-
   methods: {
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
+    async fetchData() {
+      this.listLoading = true
+      try {
+        const response = await getPromotions()
+        this.list = response.data.items
+      } catch (error) {
+        console.error('获取数据失败:', error)
+      } finally {
+        this.listLoading = false
+      }
+    },
+    Add() {
+      this.$router.push({ path: '/promotion/add' })
+    },
+    async deleteRow(row) {
+      try {
+        await deletePromotion(row.id)
+        this.$message.success('删除成功')
+        await this.fetchData()
+      } catch (error) {
+        console.error('删除失败:', error)
+        this.$message.error('删除失败')
+      }
+    },
+    async saveRow(row) {
+      try {
+        await updatePromotion(row.id, row)
+        this.$message.success('保存成功')
+      } catch (error) {
+        console.error('保存失败:', error)
+        this.$message.error('保存失败')
+      }
     }
   }
 }
 </script>
-

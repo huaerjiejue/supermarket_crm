@@ -8,12 +8,20 @@
       <el-form-item label="消费时间">
         <el-date-picker v-model="queryForm.consumption_time" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
       </el-form-item>
-      <el-form-item label="促销活动">
-        <el-input v-model="queryForm.promotion" placeholder="输入促销活动" />
+      <el-form-item label="促销方式">
+        <el-select v-model="queryForm.promotion" placeholder="选择促销方式">
+          <el-option
+            v-for="option in promotionOptions"
+            :key="option.promotion"
+            :label="option.label"
+            :value="option.promotion"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleQuery">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
+        <el-button type="primary" @click="Query">查询</el-button>
+        <el-button @click="Reset">重置</el-button>
+        <el-button type="success" class="add-button" @click="Add">添加消费</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -61,6 +69,7 @@
 
 <script>
 import { getList } from '@/api/consumption'
+import { getPromotionOptions } from '@/api/promotion'
 
 export default {
   filters: {
@@ -81,12 +90,14 @@ export default {
         promotion: ''
       },
       list: null,
+      promotionOptions: [],
       listLoading: true
     }
   },
   created() {
-    console.log('created')
+    // console.log('created')
     this.fetchData()
+    this.fetchPromotionOptions()
   },
   methods: {
     async fetchData() {
@@ -100,7 +111,18 @@ export default {
         this.listLoading = false
       }
     },
-    handleQuery() {
+    async fetchPromotionOptions() {
+      this.listLoading = true
+      try {
+        const response = await getPromotionOptions()
+        this.promotionOptions = response.data.items
+      } catch (error) {
+        console.error('获取促销方式失败:', error)
+      } finally {
+        this.listLoading = false
+      }
+    },
+    Query() {
       this.listLoading = true
       getList().then(response => {
         this.list = response.data.items.filter(item => {
@@ -116,12 +138,22 @@ export default {
         this.listLoading = false
       })
     },
-    handleReset() {
+    Reset() {
       this.queryForm.name = ''
       this.queryForm.consumption_time = ''
       this.queryForm.promotion = ''
       this.fetchData()
+      this.fetchPromotionOptions()
+    },
+    Add() {
+      this.$router.push({ path: '/consumption/add' })
     }
   }
 }
 </script>
+<style scoped>
+.add-button {
+  margin-left: 50px;
+}
+</style>
+

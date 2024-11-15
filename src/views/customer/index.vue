@@ -16,8 +16,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleQuery">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
+        <el-button type="primary" @click="Query">查询</el-button>
+        <el-button @click="Reset">重置</el-button>
+        <el-button type="success" class="add-button" @click="Add">添加用户</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -103,7 +104,7 @@ export default {
         this.listLoading = false
       }
     },
-    handleQuery() {
+    Query() {
       this.listLoading = true
       getList().then(response => {
         this.list = response.data.items.filter(item => {
@@ -119,12 +120,20 @@ export default {
         this.listLoading = false
       })
     },
-    handleReset() {
+    Reset() {
       this.queryForm.name = ''
       this.queryForm.contact = ''
       this.queryForm.level = ''
       this.fetchData()
+    },
+    Add() {
+      this.$router.push({ path: '/customer/add' })
     }
   }
 }
 </script>
+<style scoped>
+.add-button {
+  margin-left: 50px;
+}
+</style>
