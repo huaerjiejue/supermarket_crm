@@ -77,13 +77,13 @@ export const constantRoutes = [
   {
     path: '/consumption',
     component: Layout,
-    meta: { title: '消费记录', icon: 'consumption' },
+    meta: { title: '消费记录', icon: 'form' },
     children: [
       {
         path: 'list',
         name: 'Consumption',
         component: () => import('@/views/consumption/index'),
-        meta: { title: '消费记录', icon: 'consumption_index.svg' }
+        meta: { title: '消费记录', icon: 'consumption' }
       },
       {
         path: 'add',
@@ -97,13 +97,13 @@ export const constantRoutes = [
   {
     path: '/promotion',
     component: Layout,
-    meta: { title: '促销活动', icon: 'promotion' },
+    meta: { title: '促销活动', icon: 'nested' },
     children: [
       {
         path: 'index',
         name: 'Promotions',
         component: () => import('@/views/promotion/index'),
-        meta: { title: '促销活动', icon: 'promotion_index' }
+        meta: { title: '促销活动', icon: 'promotion' }
       },
       {
         path: 'add',
