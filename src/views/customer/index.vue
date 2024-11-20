@@ -31,7 +31,7 @@
     >
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.row.id }}
         </template>
       </el-table-column>
       <el-table-column label="姓名" width="110" align="center">
@@ -97,7 +97,8 @@ export default {
       this.listLoading = true
       try {
         const response = await getList()
-        this.list = response.data.items
+        console.log('获取数据成功:', response)
+        this.list = response.data
       } catch (error) {
         console.error('获取数据失败:', error)
       } finally {
@@ -107,7 +108,7 @@ export default {
     Query() {
       this.listLoading = true
       getList().then(response => {
-        this.list = response.data.items.filter(item => {
+        this.list = response.data.filter(item => {
           return (
             (!this.queryForm.name || item.author.includes(this.queryForm.name)) &&
             (!this.queryForm.contact || item.tele.includes(this.queryForm.contact)) &&

@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <h2 class="title">增加用户</h2>
+    <h2 class="title">增加消费</h2>
     <el-form :model="form" class="add-form">
-      <el-form-item label="姓名">
-        <el-input v-model="form.name" placeholder="输入姓名" />
+      <el-form-item label="消费者编号">
+        <el-input v-model="form.customer_id" placeholder="输入消费者编号" />
       </el-form-item>
       <el-form-item label="消费金额">
         <el-input v-model="form.cost" placeholder="输入消费金额" />
@@ -12,9 +12,9 @@
         <el-select v-model="form.promotion" placeholder="选择促销方式">
           <el-option
             v-for="option in promotionOptions"
-            :key="option.promotion"
+            :key="option.label"
             :label="option.label"
-            :value="option.promotion"
+            :value="option.id"
           />
         </el-select>
       </el-form-item>
@@ -28,14 +28,16 @@
 
 <script>
 import { getPromotionOptions } from '@/api/promotion'
+import { add_consumption } from '@/api/consumption'
 
 export default {
   data() {
     return {
       form: {
-        name: '',
+        customer_id: '',
         cost: '',
-        promotion: ''
+        promotion: '',
+        date: ''
       },
       promotionOptions: []
     }
@@ -48,7 +50,7 @@ export default {
       this.listLoading = true
       try {
         const response = await getPromotionOptions()
-        this.promotionOptions = response.data.items
+        this.promotionOptions = response.data
       } catch (error) {
         console.error('获取促销方式失败:', error)
       } finally {
@@ -56,7 +58,14 @@ export default {
       }
     },
     handleSubmit() {
-      console.log(this.form) // TODO: 提交表单
+      try {
+        this.form.date = new Date()
+        console.log('form:', this.form)
+        add_consumption(this.form)
+        this.$router.push({ path: '/consumption/list' })
+      } catch (error) {
+        console.error('添加消费记录失败:', error)
+      }
     },
     handleCancel() {
       this.$router.push({ path: '/consumption/list' })

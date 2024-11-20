@@ -17,18 +17,34 @@
 </template>
 
 <script>
+import { add_customer } from '@/api/customer'
+
 export default {
   data() {
     return {
       form: {
         name: '',
-        contact: ''
+        contact: '',
+        date: ''
       }
     }
   },
   methods: {
-    handleSubmit() {
-      console.log(this.form)
+    async handleSubmit() {
+      try {
+        this.form.date = new Date()
+        await add_customer(this.form)
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+        this.$router.push({ path: '/customer/list' })
+      } catch (error) {
+        this.$message({
+          message: '添加失败',
+          type: 'error'
+        })
+      }
     },
     handleCancel() {
       this.$router.push({ path: '/customer/list' })

@@ -14,7 +14,7 @@
             v-for="option in promotionOptions"
             :key="option.promotion"
             :label="option.label"
-            :value="option.promotion"
+            :value="option.value"
           />
         </el-select>
       </el-form-item>
@@ -34,12 +34,17 @@
     >
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.$index+1 }}
         </template>
       </el-table-column>
       <el-table-column label="姓名" width="110" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
+        </template>
+      </el-table-column>
+      <el-table-column label="用户编号" width="110" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.user_id }}</span>
         </template>
       </el-table-column>
       <el-table-column label="消费金额" width="110" align="center">
@@ -63,7 +68,7 @@
           <span>{{ scope.row.promotion }}</span>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table-column></el-table>
   </div>
 </template>
 
@@ -104,7 +109,7 @@ export default {
       this.listLoading = true
       try {
         const response = await getList()
-        this.list = response.data.items
+        this.list = response.data
       } catch (error) {
         console.error('获取数据失败:', error)
       } finally {
@@ -115,7 +120,7 @@ export default {
       this.listLoading = true
       try {
         const response = await getPromotionOptions()
-        this.promotionOptions = response.data.items
+        this.promotionOptions = response.data
       } catch (error) {
         console.error('获取促销方式失败:', error)
       } finally {
@@ -125,11 +130,13 @@ export default {
     Query() {
       this.listLoading = true
       getList().then(response => {
-        this.list = response.data.items.filter(item => {
+        // console.log('后端返回数据：', response.data)
+        this.list = response.data.filter(item => {
+          // console.log('过滤条件', this.queryForm)
           return (
             (!this.queryForm.name || item.name.includes(this.queryForm.name)) &&
             (!this.queryForm.consumption_time || item.consumption_time.includes(this.queryForm.consumption_time)) &&
-            (!this.queryForm.promotion || item.promotion.includes(this.queryForm.promotion))
+            (!this.queryForm.promotion || item.promotion === this.queryForm.promotion)
           )
         })
         this.listLoading = false
